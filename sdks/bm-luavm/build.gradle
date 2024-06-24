@@ -1,0 +1,82 @@
+import util.BuilConfigHelper;
+apply from: new File(BuilConfigHelper.rootPath(),'gradle/library-project.gradle')
+apply from: new File(BuilConfigHelper.rootPath(), 'gradle/commons.gradle')
+
+project.ext.type = 'android'
+project.ext.groupId = Group.commonGroup
+//    version =  PublishVersions.bm_core
+project.ext.version =  System.getProperty(Artifacts.bm_global, "1.0.0")
+project.ext.artifactId =  Artifacts.bm_lua
+
+
+logger.lifecycle("---------------${project.ext.artifactId}------------------------")
+logger.lifecycle("${project.ext.groupId}:${project.ext.artifactId}:${project.ext.version}")
+logger.lifecycle("-----------------------------------------------------")
+
+
+android {
+    ndkVersion Android.ndkVersion
+    defaultConfig {
+        ndk {
+            abiFilters "armeabi-v7a", "arm64-v8a"
+        }
+        buildConfigField "boolean", "useOne", System.getProperty("BUILD_ONE_SO", "false")
+    }
+
+    externalNativeBuild {
+        cmake {
+            path "src/main/cpp/CMakeLists.txt"
+            version "3.18.1"
+        }
+    }
+
+    sourceSets {
+        main {
+            java.srcDirs = ["./src/main/java"];
+            assets.srcDirs = ["./src/main/assets"]
+        }
+    }
+
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            externalNativeBuild {
+                cmake {
+                    arguments "-DUSE_ONE_CORE="+System.getProperty("BUILD_ONE_SO", "false").toUpperCase(),
+                            "-DOPT_SO_SIZE=TRUE",
+                            "-DBUILD_TYPE=release",
+                            "-DUSE_LOG="+System.getProperty("USE_LOG", "false").toUpperCase(),
+                            "-DUSE_SOCKET=false",
+                            "-DLUA_LOCK_THREAD="+System.getProperty("LUA_LOCK_THREAD", "false").toUpperCase()
+                }
+            }
+            ndk {
+            }
+            consumerProguardFiles 'proguard-rules.pro'
+        }
+        debug {
+            externalNativeBuild {
+                cmake {
+                    arguments "-DUSE_ONE_CORE="+System.getProperty("BUILD_ONE_SO", "false").toUpperCase(),
+                            "-DOPT_SO_SIZE=FALSE",
+                            "-DBUILD_TYPE=debug",
+                            "-DUSE_LOG="+System.getProperty("USE_LOG", "false").toUpperCase(),
+                            "-DUSE_SOCKET=false",
+                            "-DLUA_LOCK_THREAD="+System.getProperty("LUA_LOCK_THREAD", "false").toUpperCase()
+                }
+            }
+            ndk {
+                debugSymbolLevel "FULL"
+            }
+            jniDebuggable true
+        }
+    }
+
+    publishNonDefault  true
+}
+
+dependencies {
+    implementation Android.lifecycle
+    implementation Android.lifecycleJava8
+}

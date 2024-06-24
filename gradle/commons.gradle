@@ -1,0 +1,134 @@
+/**
+ * 获取分支名称
+ */
+def gitBranch() {
+    def cmd = 'git log --pretty=format:%h -1'
+    def commit = cmd.execute().text.trim()
+    def branch = []
+    def gitpath = "git branch -r --contains ${commit}"
+    def proc = gitpath.execute()
+    proc.in.eachLine { line ->
+        branch.add(line.trim())
+    }
+    proc.err.eachLine { line -> println line }
+    proc.waitFor()
+    logger.lifecycle('branch.===' + branch.toString())
+    def ret = branch.toString().replace("[origin/","").replace("/","-").replace("[","").replace("]","")
+    return ret;
+}
+
+def getCurTopGitCommit(n, branchName) {
+    def cmd
+    if (branchName == null) {
+        cmd = "git log --pretty=format:%h -$n"
+    } else {
+        cmd = "git log $branchName --pretty=format:%h -$n"
+    }
+    def gitCommit = cmd.execute().text.trim()
+    "$gitCommit".toString()
+}
+
+def getGitCommit() {
+    def cmd = 'git log --pretty=format:%h -1'
+    def gitCommit = cmd.execute().text.trim()
+    "\"$gitCommit\""
+}
+
+def gitCommitHash() {
+    def commitHash = ""
+    def proc = "git rev-parse --short HEAD".execute()
+    proc.in.eachLine { line -> commitHash = line }
+    proc.err.eachLine { line -> println line }
+    proc.waitFor()
+    commitHash
+}
+
+
+
+def getGradleBuildType() {
+    if (gradle.startParameter.taskRequests.size > 0) {
+        def cmd = gradle.startParameter.taskRequests[0].args
+        if (cmd.contains("run") || cmd.contains("Debug")) {
+            return "debug"
+        } elseif (cmd.contains("Release")) {
+            return "release"
+        } else if (cmd.contains("clean")) {
+            return "clean"
+        }
+    }
+    return ""
+}
+
+
+/**
+ * 设置System.properties。
+ * 优先级高 覆盖 优先级低
+ * 优先级: local.properties > app.properties > 构建参数 > gradle.properties
+ */
+def setSystemProperties(String key, String defaultValue, String extStr = "") {
+    def value = ""
+
+    def gradleValue = findProperties("gradle.properties", key)
+    if (gradleValue.trim() != "") {
+        value = gradleValue
+        logger.lifecycle("gradle.properties has : " + key)
+    }
+
+    if (hasProperty(key)) {
+        value = getProperty(key)
+        logger.lifecycle("build parameter has : " + key)
+    }
+
+    if (System.getProperty(key) != null) {
+        value = System.getProperty(key)
+        logger.lifecycle("build -D parameter has : " + key)
+    }
+    def appTypeValue = findProperties("app.properties", key)
+    if (appTypeValue.trim() != "") {
+        value = appTypeValue
+        logger.lifecycle("apptype.properties has : " + key)
+    }
+
+    def localTypeValue = findProperties("local.properties", key)
+    if (localTypeValue.trim() != "") {
+        value = localTypeValue
+        logger.lifecycle("local.properties has : " + key)
+    }
+
+    if (value.trim() != "") {
+        System.setProperty(key, value + extStr)
+        logger.lifecycle("set properties -> " + key + " : " + value)
+    } else {
+        System.setProperty(key, defaultValue)
+        logger.lifecycle("set properties  by default -> " + key + " : " + defaultValue)
+    }
+}
+
+/**
+ * 从某个properties中读取，
+ * 如果能读到，则返回值, 默认 ""
+ */
+def findProperties(String filePath, String key) {
+    def result = ""
+    def fileConfig = new File(rootDir, filePath)
+    if (fileConfig.canRead()) {
+        def gradleProperties = new Properties()
+
+        gradleProperties.load(fileConfig.newDataInputStream())
+        def value = gradleProperties.getProperty(key)
+        if (value != null) {
+            result = value
+        }
+    }
+    return result
+}
+
+ext {
+    getBuildType = this.&getGradleBuildType
+    findProperties = this.&findProperties
+    setSystemProperties = this.&setSystemProperties
+    getCurTopGitCommit = this.&getCurTopGitCommit
+    getGitCommit = this.&getGitCommit
+    gitBranch = this.&gitBranch
+    gitCommitHash = this.&gitCommitHash
+}

@@ -1,0 +1,26 @@
+import util.BuilConfigHelper
+
+apply plugin: 'com.android.dynamic-feature'
+
+android {
+    compileSdkVersion 33
+
+    defaultConfig {
+        minSdkVersion 21
+        targetSdkVersion 31
+        versionCode 1
+        versionName "1.0"
+    }
+
+    buildTypes {
+        release {
+            //proguardFiles getDefaultProguardFile('proguard-android.txt')//, 'proguard-rules.pro'
+        }
+    }
+
+}
+
+dependencies {
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+    implementation project(':aab-app')
+}

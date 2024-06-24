@@ -1,0 +1,23 @@
+import util.BuilConfigHelper
+apply plugin: 'maven-publish'
+afterEvaluate {
+    publishing {
+        publications {
+            plugin(MavenPublication) {
+                from components.java
+                groupId = '$project.group'
+                artifactId = '$$project.artifactId'
+                version = '$project.version'
+            }
+        }
+        repositories {
+            maven {
+                url = 'https://packages.aliyun.com/664dd6f751a00cba2db2171f/maven/luareinforce-pub'
+                credentials {
+                    username = '664dd6d1f5ac7fac9a9e7fe0'
+                    password = 'QXPXNuZAgIO1'
+                }
+            }
+        }
+    }
+}

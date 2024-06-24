@@ -1,0 +1,36 @@
+import util.BuilConfigHelper
+
+apply plugin: 'com.android.library'
+//https://github.com/chrisbanes/gradle-mvn-push
+//https://vanniktech.github.io/gradle-maven-publish-plugin/central/#timeouts
+//apply from: 'https://raw.github.com/chrisbanes/gradle-mvn-push/master/gradle-mvn-push.gradle'
+
+android {
+    compileSdkVersion Android.compileSdkVersion
+
+    defaultConfig {
+        minSdkVersion Android.minSdkVersion
+        vectorDrawables.useSupportLibrary = true
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+
+    packagingOptions {
+        doNotStrip '**/armeabi-v7a/*.so'
+        doNotStrip '**/arm64-v8a/*.so'
+    }
+
+    buildTypes {
+        release {
+            consumerProguardFiles 'consumer-rules.pro', 'proguard-rules.pro'
+        }
+    }
+}
+
+dependencies {
+    implementation fileTree(dir: "libs", include: '*.jar')
+    implementation Android.kotlin
+}

@@ -1,0 +1,2 @@
+#!/bin/bash
+exec "java" -jar "bundletool-all-1.8.1.jar" "$@"

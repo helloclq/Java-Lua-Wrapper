@@ -1,0 +1,40 @@
+logger.lifecycle("---------root--setting.gradle")
+/***********************************************************************/
+Properties localProperties = new Properties()
+if (file('local.properties').canRead()) {
+    localProperties.load(file('local.properties').newDataInputStream())
+    logger.lifecycle('Local configuration: loaded local.properties' + localProperties)
+    localProperties.each { prop ->
+        gradle.ext.set("localProperties.${prop.key}", prop.value)
+    }
+} else {
+    logger.lifecycle('NOT FOUND local.properties.')
+}
+gradle.ext.localProperties = localProperties
+
+apply from: new File(rootDir, 'gradle/commons.gradle')
+
+setSystemProperties("VERSION_NAME", "1.1.1")
+setSystemProperties("VERSION_CODE", "111111")
+
+setSystemProperties("useRemote", "false")
+
+setSystemProperties("bmExt", "")
+logger.lifecycle("=======>>>bm-test-ext::" + System.getProperty("bmExt", ""))
+
+setSystemProperties("bm-global", "${gitBranch()}-${gitCommitHash()}", System.getProperty("klwExt", ""))
+logger.lifecycle("=======>>>xx::" + System.getProperty("bm-global", "1.0.0"))
+setSystemProperties("BUILD_ONE_SO", "false")
+//是否使用新编译的lua库
+setSystemProperties("USE_bm_lua", "false")
+setSystemProperties("USE_LOG", "false")
+setSystemProperties("LUA_LOCK_THREAD", "false")
+setSystemProperties("USE_SOCKET", "false")
+setSystemProperties("rootPath", rootProject.projectDir.absolutePath)
+
+include ':sdks:bm-luavm'
+include ':aab-app'
+include ':dynamic_feature'
+logger.lifecycle("---------root--setting.gradle----endl")
+
+

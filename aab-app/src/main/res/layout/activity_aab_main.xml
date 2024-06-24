@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:app="http://schemas.android.com/apk/res-auto"
+  xmlns:tools="http://schemas.android.com/tools"
+  android:layout_width="match_parent"
+  android:layout_height="match_parent"
+  android:orientation="vertical"
+  android:padding="16dip"
+  tools:context="com.blockcheng.text.MainActivity">
+
+  <TextView
+    android:id="@+id/textView"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:text="hotfix_info"
+    android:textSize="20dp" />
+
+  <Button
+    android:id="@+id/button_load"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:tag="load_dynamic"
+    android:text="开始加载插件"
+    tools:ignore="MissingConstraints"
+    tools:layout_editor_absoluteX="154dp"
+    tools:layout_editor_absoluteY="231dp" />
+
+  <Button
+    android:id="@+id/button"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:tag="dynamic"
+    android:text="开始动态分发"
+    android:textSize="20dp"
+    tools:ignore="MissingConstraints"
+    tools:layout_editor_absoluteX="154dp"
+    tools:layout_editor_absoluteY="231dp" />
+
+  <TextView
+    android:id="@+id/hotfix_info_text"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:text="热修信息"
+    android:textSize="@dimen/permission_dp_15">
+
+  </TextView>
+
+  <Button
+    android:id="@+id/hotfix_info"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:tag="LuaReinforce"
+    android:text="热修代码测试"
+    tools:ignore="MissingConstraints"
+    tools:layout_editor_absoluteX="154dp"
+    tools:layout_editor_absoluteY="231dp" />
+
+</LinearLayout>

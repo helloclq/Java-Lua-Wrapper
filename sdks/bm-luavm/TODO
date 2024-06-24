@@ -1,0 +1,15 @@
+#基于最新的klsf 1.0.6
+https://git.corp.kuaishou.com/facemagic/KLSF
+master分支， 79d24d65fcec00448f17c17a05dbe09ff1b8a446
+
+
+TODO: 升级到lua 5.3.5
+--解决性能问题
+--goto语法
+--continue
+--位运算
+
+Lua 版本性能比较：
+https://zhuanlan.zhihu.com/p/380401742
+https://github.com/gligneul/Lua-Benchmarks
+https://zhuanlan.zhihu.com/p/137588708

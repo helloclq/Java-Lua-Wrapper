@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:dist="http://schemas.android.com/apk/distribution"
+    package="com.blockcheng.dynamic_feature"
+    >
+
+    <dist:module
+        dist:onDemand="true"
+        dist:title="@string/title_dynamic_feature">
+        <dist:fusing dist:include="true" />
+    </dist:module>
+
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.STORAGE"/>
+
+    <application>
+        <activity
+            android:name="com.blockcheng.dynamic.DFM_MainAct"
+            android:label="@string/title_activity_main"
+            android:exported="true"
+            android:theme="@style/AppTheme.NoActionBar">
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+            </intent-filter>
+        </activity>
+        <activity android:name="com.blockcheng.dynamic.DFM_ActB"></activity>
+    </application>
+
+</manifest>

@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--pro/snack/me/ru共用 通过getIdentifier 动态反射资源配置-->
+<resources xmlns:tools="http://schemas.android.com/tools"
+    tools:keep="@layout/*,@drawable/*,@anim/*"
+  tools:shrinkMode="safe"/>

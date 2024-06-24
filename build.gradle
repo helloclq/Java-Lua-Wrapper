@@ -1,0 +1,70 @@
+// Top-level build file where you can add configuration options common to all sub-projects/modules.
+import util.BuilConfigHelper
+
+BuilConfigHelper.INSTANCE.init(gradle)
+buildscript {
+    repositories {
+        mavenLocal()
+        maven {
+            allowInsecureProtocol = true
+            url 'https://maven.aliyun.com/repository/public'
+        }
+        maven {
+            credentials {
+                username '664dd6d1f5ac7fac9a9e7fe0'
+                password 'QXPXNuZAgIO1'
+            }
+            url 'https://packages.aliyun.com/664dd6f751a00cba2db2171f/maven/luareinforce-pub'
+        }
+        google()
+        maven {
+            allowInsecureProtocol = true
+            url "https://jitpack.io"
+        }
+        mavenCentral()
+    }
+    dependencies {
+        classpath('com.android.tools.build:gradle-api:7.1.0')
+        classpath('com.android.tools.build:gradle:7.1.2')
+        classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:${Versions.kotlin}")
+        classpath("org.jetbrains.kotlin:kotlin-android-extensions:${Versions.kotlin}")
+        classpath 'com.android.tools:sdk-common:30.1.3'
+
+        classpath 'org.javassist:javassist:3.26.0-GA'
+        classpath 'org.ow2.asm:asm:7.3.1'
+        def localPublish = System.properties.getOrDefault("localPublish", "false")
+        logger.lifecycle('localPublish:' + localPublish)
+    }
+}
+
+allprojects {
+    def rootRepositories = rootProject.buildscript.repositories
+    rootRepositories.each { repo ->
+        repositories.add(repo)
+        buildscript.repositories.add(repo)
+    }
+
+    configurations.configureEach {
+
+        exclude group: 'com.tencent', module: 'mmkv-static'
+
+        resolutionStrategy {
+            /**
+             *  https://stackoverflow.com/questions/68884589/caused-by-java-lang-exception-no-native-library-is-found-for-os-name-mac-and-o
+             *  mac m2本地编译报错，升级jdbc可解决
+             */
+            if (System.properties['os.name'] == "Mac OS X" && System.getProperty('os.arch') == "aarch64") {
+                force "org.xerial:sqlite-jdbc:3.36.0.1"
+            }
+        }
+        // check for updates every build
+        resolutionStrategy.cacheChangingModulesFor 10, 'seconds'
+
+        // check for 10 minutes time
+        resolutionStrategy.cacheChangingModulesFor 10, 'seconds'
+    }
+}
+
+task clean(type: Delete) {
+    delete rootProject.buildDir
+}
